@@ -77,7 +77,7 @@ const HeroSection = () => {
               <div className="w-80 h-80 rounded-full bg-gradient-to-br from-tech-orange to-tech-electric p-1">
                 <div className="w-full h-full rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center">
                   <img 
-                    src="/lovable-uploads/d2c7f363-bb23-417f-a58d-0e82515fc384.png"
+                    src="https://i.postimg.cc/Y08gKr4t/IMG-20250628-WA0001-1.jpg"
                     alt="Amandeep Singh"
                     className="w-72 h-72 rounded-full object-cover border-4 border-white/20"
                   />
