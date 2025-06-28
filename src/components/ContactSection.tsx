@@ -1,10 +1,10 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
+import emailjs from '@emailjs/browser';
 
 const ContactSection = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +12,7 @@ const ContactSection = () => {
     email: '',
     message: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
@@ -20,11 +21,32 @@ const ContactSection = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate form submission
-    toast.success("Message sent successfully! I'll get back to you soon.");
-    setFormData({ name: '', email: '', message: '' });
+    setIsSubmitting(true);
+
+    try {
+      // Send email using EmailJS
+      await emailjs.send(
+        'service_gi0563j', // Service ID
+        'template_dbo9eos', // Template ID
+        {
+          from_name: formData.name,
+          from_email: formData.email,
+          message: formData.message,
+          to_name: 'Amandeep Singh',
+        },
+        'T9wuISeqb4ErU-tlY' // Public Key
+      );
+
+      toast.success("Message sent successfully! I'll get back to you soon.");
+      setFormData({ name: '', email: '', message: '' });
+    } catch (error) {
+      console.error('EmailJS error:', error);
+      toast.error("Failed to send message. Please try again or contact me directly.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const contactInfo = [
@@ -86,6 +108,7 @@ const ContactSection = () => {
                     value={formData.name}
                     onChange={handleInputChange}
                     required
+                    disabled={isSubmitting}
                     className="bg-white/10 border-white/30 text-white placeholder:text-gray-300 focus:border-tech-orange"
                     placeholder="Enter your name"
                   />
@@ -102,6 +125,7 @@ const ContactSection = () => {
                     value={formData.email}
                     onChange={handleInputChange}
                     required
+                    disabled={isSubmitting}
                     className="bg-white/10 border-white/30 text-white placeholder:text-gray-300 focus:border-tech-orange"
                     placeholder="Enter your email"
                   />
@@ -117,6 +141,7 @@ const ContactSection = () => {
                     value={formData.message}
                     onChange={handleInputChange}
                     required
+                    disabled={isSubmitting}
                     rows={5}
                     className="bg-white/10 border-white/30 text-white placeholder:text-gray-300 focus:border-tech-orange resize-none"
                     placeholder="Tell me about your project or inquiry..."
@@ -125,9 +150,10 @@ const ContactSection = () => {
                 
                 <Button
                   type="submit"
-                  className="w-full bg-tech-orange hover:bg-tech-orange/90 text-white font-rajdhani text-lg py-3 rounded-lg transition-all duration-300 hover:scale-105"
+                  disabled={isSubmitting}
+                  className="w-full bg-tech-orange hover:bg-tech-orange/90 text-white font-rajdhani text-lg py-3 rounded-lg transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
-                  Send Message
+                  {isSubmitting ? 'Sending...' : 'Send Message'}
                 </Button>
               </form>
             </CardContent>
